@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack AI - My Medicines</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f9ff;
+        }
+
+        header {
+            background: white;
+            padding: 20px 8%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2463d4;
+        }
+
+        .container {
+            padding: 40px 8%;
+        }
+
+        h1 {
+            color: #2463d4;
+        }
+
+        .medicine-card {
+            background: white;
+            padding: 25px;
+            margin-top: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .medicine-card h2 {
+            color: #2463d4;
+        }
+
+        .medicine-card p {
+            font-size: 17px;
+            color: #555;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #2463d4;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">💊 MediTrack AI</div>
+    </header>
+
+    <div class="container">
+
+        <h1>My Medicines</h1>
+
+        {% for medicine in medicines %}
+
+        <div class="medicine-card">
+
+            <h2>💊 {{ medicine[1] }}</h2>
+
+            <p>
+                <strong>Dose:</strong>
+                {{ medicine[2] }}
+            </p>
+
+            <p>
+                <strong>Time:</strong>
+                {{ medicine[3] }}
+            </p>
+
+            <p>
+                <strong>Instructions:</strong>
+                {{ medicine[4] }}
+            </p>
+
+<div class="medicine-actions">
+    <form action="/medicine/{{ medicine[0] }}/taken" method="POST">
+        <button type="submit" class="taken-btn">
+            ✅ Taken
+        </button>
+    </form>
+
+    <form action="/medicine/{{ medicine[0] }}/missed" method="POST">
+        <button type="submit" class="missed-btn">
+            ❌ Missed
+        </button>
+    </form>
+</div>
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+        <a href="/dashboard" class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+    </div>  <!-- உங்க existing code -->
+
+    <script>
+    let notified = {};
+
+    setInterval(function() {
+
+        const now = new Date();
+        const currentTime = now.toTimeString().slice(0, 5);
+
+        document.querySelectorAll(".medicine-card").forEach(function(card) {
+
+            const medicineName = card.querySelector("h2").innerText;
+            const timeText = card.querySelector("p:nth-of-type(2)").innerText;
+
+            const medicineTime = timeText.replace("Time:", "").trim();
+
+            const key = medicineName + "-" + currentTime;
+
+            if (medicineTime === currentTime && !notified[key]) {
+
+                notified[key] = true;
+
+                alert("⏰ Medicine Reminder\n\nTime to take: " + medicineName);
+            }
+        });
+
+    }, 30000);
+    </script>
+
+</body>
+</html>
